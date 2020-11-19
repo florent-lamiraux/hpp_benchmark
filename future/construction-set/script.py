@@ -310,11 +310,19 @@ if args.N != 0:
   print ("Average time: " + str ((totalTime.seconds+1e-6*totalTime.microseconds)/float (args.N)))
   print ("Average number nodes: " + str (totalNumberNodes/float(args.N)))
   cleanPaths (ps, solutions)
-#check if there are collisions in each path
-p = PathChecker(ps, q0, q_goal)
-dtime = 0.001
-for i in range (ps.numberPaths()):
-  print("\n---Path {}---".format(i))
-  p.check_path(i, dtime)
-if args.run:
-  pp(0)
+
+# Create a goal configuration with the construction set assembled.
+
+ps.selectPathPlanner('RMR*')
+ps.selectPathValidation('NoValidation', 0)
+ps.clearConfigValidations()
+
+cg.initialize()
+
+q_goal = q0_r0 + q0_r1 + [-0.06202136144745322, -0.15, 0.025, 1, 0, 0, 0,
+                           0.06202136144745322, -0.15, 0.025, 1, 0, 0, 0,
+                           0, -0.15, 0.025, 0, 0, 0, 1,
+                          0.5, -0.08, 0.025, 0, 0, 0, 1]
+ps.setInitialConfig(q0)
+ps.addGoalConfig(q_goal)
+ps.setMaxIterPathPlanning(100)
